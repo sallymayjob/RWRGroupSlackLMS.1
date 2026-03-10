@@ -109,7 +109,6 @@
       "request_url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL",
       "bot_events": [
         "app_home_opened",
-        "message.im",
         "team_join"
       ]
     },
