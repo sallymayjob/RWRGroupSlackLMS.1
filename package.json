@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "node tests/lms-foundation-smoke.test.js"
+    "test": "node tests/run-all.js"
   }
 }
