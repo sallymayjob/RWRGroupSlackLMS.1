@@ -1,0 +1,124 @@
+{
+  "_metadata": {
+    "major_version": 1,
+    "minor_version": 1
+  },
+  "display_information": {
+    "name": "Slack LMS",
+    "description": "Slack-native LMS for onboarding, lessons, reminders, approvals, and AI content workflows.",
+    "background_color": "#2C2D30",
+    "long_description": "Slack LMS uses Slack, Google Apps Script, Google Sheets, Gemini, and Gems to deliver onboarding and lesson workflows with queueing, reminders, approvals, and content pipeline automation."
+  },
+  "features": {
+    "app_home": {
+      "home_tab_enabled": true,
+      "messages_tab_enabled": true,
+      "messages_tab_read_only_enabled": false
+    },
+    "bot_user": {
+      "display_name": "Slack LMS",
+      "always_online": false
+    },
+    "slash_commands": [
+      {
+        "command": "/learn",
+        "description": "Show current lesson and next steps",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/progress",
+        "description": "Show learner progress snapshot",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/lesson",
+        "description": "Show lesson details",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/complete",
+        "description": "Mark lesson complete/check-in",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/onboard",
+        "description": "Start onboarding flow",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/admin",
+        "description": "Open admin actions",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/cohort",
+        "description": "Cohort operations",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      },
+      {
+        "command": "/resend",
+        "description": "Resend a lesson",
+        "should_escape": false,
+        "url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Assign learner to cohort",
+        "type": "global",
+        "callback_id": "assign_learner_to_cohort",
+        "description": "Assign a learner to a cohort and track"
+      },
+      {
+        "name": "Create lesson draft from message",
+        "type": "message",
+        "callback_id": "create_lesson_draft_from_message",
+        "description": "Create draft lesson content from selected message"
+      },
+      {
+        "name": "Request approval",
+        "type": "message",
+        "callback_id": "request_approval_from_message",
+        "description": "Request manager/admin approval for selected item"
+      }
+    ]
+  },
+  "oauth_config": {
+    "scopes": {
+      "bot": [
+        "commands",
+        "chat:write",
+        "chat:write.public",
+        "im:history",
+        "im:read",
+        "im:write",
+        "users:read",
+        "users:read.email"
+      ]
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "request_url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL",
+      "bot_events": [
+        "app_home_opened",
+        "message.im",
+        "team_join"
+      ]
+    },
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://YOUR_APPS_SCRIPT_WEB_APP_URL"
+    },
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
