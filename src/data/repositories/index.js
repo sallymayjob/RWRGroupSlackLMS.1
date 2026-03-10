@@ -3,6 +3,7 @@ const { createCurriculumRepo } = require('./curriculumRepo');
 const { createLearningOpsRepo } = require('./learningOpsRepo');
 const { createAdminOpsRepo } = require('./adminOpsRepo');
 const { createContentPipelineRepo } = require('./contentPipelineRepo');
+const { createAiConfigRepo } = require('./aiConfigRepo');
 
 module.exports = {
   createUsersRepo,
@@ -10,4 +11,5 @@ module.exports = {
   createLearningOpsRepo,
   createAdminOpsRepo,
   createContentPipelineRepo,
+  createAiConfigRepo,
 };

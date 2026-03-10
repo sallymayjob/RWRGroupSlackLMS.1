@@ -19,7 +19,10 @@ const {
   createLearningOpsRepo,
   createAdminOpsRepo,
   createContentPipelineRepo,
+  createAiConfigRepo,
 } = require('./data/repositories');
+const { createGeminiService } = require('./ai/geminiService');
+const { createGemInvocationLayer } = require('./ai/gemInvocationLayer');
 const { createOnboardingEngine } = require('./engines/onboardingEngine');
 const { createLessonDeliveryEngine } = require('./engines/lessonDeliveryEngine');
 const { createProgressEngine } = require('./engines/progressEngine');
@@ -28,6 +31,9 @@ const { createSchedulerEngine } = require('./engines/schedulerEngine');
 const { createDeliveryScanEngine } = require('./engines/deliveryScanEngine');
 const { createReminderScanEngine } = require('./engines/reminderScanEngine');
 const { createReminderEngine } = require('./engines/reminderEngine');
+const { createContentPipelineEngine } = require('./engines/contentPipelineEngine');
+const { createContentQAEngine } = require('./engines/contentQAEngine');
+const { createPublishingSyncEngine } = require('./engines/publishingSyncEngine');
 
 module.exports = {
   bootstrapSettings,
@@ -51,6 +57,9 @@ module.exports = {
   createLearningOpsRepo,
   createAdminOpsRepo,
   createContentPipelineRepo,
+  createAiConfigRepo,
+  createGeminiService,
+  createGemInvocationLayer,
   createOnboardingEngine,
   createLessonDeliveryEngine,
   createProgressEngine,
@@ -59,4 +68,7 @@ module.exports = {
   createDeliveryScanEngine,
   createReminderScanEngine,
   createReminderEngine,
+  createContentPipelineEngine,
+  createContentQAEngine,
+  createPublishingSyncEngine,
 };
