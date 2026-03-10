@@ -23,6 +23,11 @@ const {
 const { createOnboardingEngine } = require('./engines/onboardingEngine');
 const { createLessonDeliveryEngine } = require('./engines/lessonDeliveryEngine');
 const { createProgressEngine } = require('./engines/progressEngine');
+const { createQueueProcessor } = require('./engines/queueProcessor');
+const { createSchedulerEngine } = require('./engines/schedulerEngine');
+const { createDeliveryScanEngine } = require('./engines/deliveryScanEngine');
+const { createReminderScanEngine } = require('./engines/reminderScanEngine');
+const { createReminderEngine } = require('./engines/reminderEngine');
 
 module.exports = {
   bootstrapSettings,
@@ -49,4 +54,9 @@ module.exports = {
   createOnboardingEngine,
   createLessonDeliveryEngine,
   createProgressEngine,
+  createQueueProcessor,
+  createSchedulerEngine,
+  createDeliveryScanEngine,
+  createReminderScanEngine,
+  createReminderEngine,
 };

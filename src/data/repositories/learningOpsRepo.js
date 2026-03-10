@@ -29,6 +29,9 @@ function createLearningOpsRepo(dal) {
     listDeliveriesByUserAndLesson(userId, lessonId) {
       return dal.findBy('Deliveries', (row) => row.user_id === userId && row.lesson_id === lessonId);
     },
+    findDueDeliveries(referenceIso) {
+      return dal.findBy('Deliveries', (row) => row.sent_at && row.sent_at <= referenceIso);
+    },
     createReminder(reminder) {
       return dal.upsert('Reminders', reminder, (row) => row.reminder_id === reminder.reminder_id);
     },

@@ -1,4 +1,4 @@
-/** Simple notification abstraction for LMS-028 */
+/** Notification abstraction for delivery + reminder flows. */
 
 function createNotificationService({ slackClient, now = () => new Date().toISOString() }) {
   return {
@@ -8,6 +8,20 @@ function createNotificationService({ slackClient, now = () => new Date().toISOSt
         channel: channelId || userId,
         text,
         metadata: { traceId, lessonId: lesson.lesson_id },
+      });
+
+      return {
+        sentAt: now(),
+        slackTs: response.ts,
+        channelId: response.channel,
+      };
+    },
+    sendReminder({ userId, delivery, reminderNo }) {
+      const text = `Reminder ${reminderNo}: Lesson ${delivery.lesson_id} is still pending.`;
+      const response = slackClient.postMessage({
+        channel: userId,
+        text,
+        metadata: { deliveryId: delivery.delivery_id, reminderNo },
       });
 
       return {
