@@ -2,7 +2,7 @@
  * LMS-012: Column dictionaries and enum validators.
  */
 
-const ENUMS = {
+var ENUMS = {
   user_role: ['learner', 'manager', 'admin'],
   user_status: ['active', 'inactive'],
   enrollment_pace_mode: ['self', 'scheduled'],
@@ -12,7 +12,7 @@ const ENUMS = {
   active_flag: ['true', 'false'],
 };
 
-const TABLE_RULES = {
+var TABLE_RULES = {
   Users: {
     required: ['user_id', 'slack_user_id', 'role', 'status'],
     enums: { role: 'user_role', status: 'user_status' },

@@ -1,209 +1,216 @@
-# Slack LMS (Apps Script + Sheets + Slack + Gemini/Gems)
+# Slack LMS Setup Guide (Zero Technical Background)
 
-This repository contains a modular, Apps Script-friendly implementation of a Slack-native LMS with:
+If you can use Google Docs and click around Slack settings, you can set this up.
 
-- Slack request verification and routing
-- Google Sheets-oriented DAL + repositories
-- Onboarding, lesson delivery, progress, reminders, queue/scheduler engines
-- Gemini + Gem role invocation pipeline (draft generation, QA, publishing)
-- Smoke tests for major workflow chains
+This guide is written for non-technical people.
 
 ---
 
+## What this project does (in plain English)
 
-## Slack manifest
+This project gives you a Slack learning bot.
 
-A starter Slack app manifest is included at `manifest.json`.
+- People type commands in Slack (like `/learn`)
+- The bot stores data in Google Sheets
+- Google Apps Script runs the automation behind the scenes
 
-- Replace `https://YOUR_APPS_SCRIPT_WEB_APP_URL` with your deployed Apps Script Web App URL before importing into Slack.
-- Import via Slack App settings (App Manifest) to create/update app configuration quickly.
+Think of it like:
 
----
-
-## 1) Prerequisites
-
-Before deployment, ensure you have:
-
-- A Google Workspace account with access to:
-  - Google Sheets
-  - Google Apps Script
-- A Slack workspace where you can create/install apps
-- Gemini API access configured for your org/project
-- Local Node.js (for smoke tests):
-  - Node 18+ recommended
+- **Slack app** = the chat face
+- **Google Sheet** = the memory
+- **Apps Script** = the brain
 
 ---
 
-## 2) Create the System-of-Record Google Sheet
+## Before you start
 
-1. Create a new Google Spreadsheet (name suggestion: `Slack LMS SoR`).
-2. Create tabs listed in architecture/docs (or run your bootstrap path from Apps Script using `TAB_SCHEMAS`).
-3. Confirm core tabs exist at minimum:
-   - `Settings`
-   - `Users`, `Tracks`, `Lessons`, `Enrollments`, `Progress`, `Deliveries`, `Reminders`
-   - `Queue`, `Audit_Log`, `Error_Log`
-   - `Gem_Roles`, `Prompt_Configs`, `Content_Pipeline`, `Generated_Drafts`, `QA_Results`, `Publish_Queue`
+You need:
 
-> Tip: Protect the `Settings` tab and keep secrets editable only by admins.
+1. A Google account
+2. A Slack workspace where you can create apps
+3. About 60 minutes
+4. This repository downloaded to your computer
 
 ---
 
-## 3) Configure Settings/Secrets
+## Step 1) Download this repository
 
-Populate `Settings` (or Script Properties mirror) with these required values:
+1. Open this repo on GitHub.
+2. Click **Code**.
+3. Click **Download ZIP**.
+4. Unzip the folder.
 
-- `SLACK_SIGNING_SECRET`
-- `SLACK_BOT_TOKEN`
-- `WEBHOOK_MAX_SKEW_SECONDS` (e.g., `300`)
-- `APP_ENV` (e.g., `prod`)
-
-Recommended extra operational keys:
-
-- `QUEUE_MAX_ATTEMPTS`
-- `QUEUE_BACKOFF_SECONDS`
-- `QUEUE_STALE_LOCK_SECONDS`
-- `GEMINI_MODEL`
-- `GEMINI_TIMEOUT_MS`
+You will use files from the `appscript/` folder later.
 
 ---
 
-## 4) Create and Configure Slack App
+## Step 2) Create your Google Sheet (this is your database)
 
-1. Go to Slack API > Your Apps > Create App.
-2. Enable and configure:
-   - **Slash Commands**: `/learn`, `/progress`, `/lesson`, `/complete`, `/onboard`, `/admin`, `/cohort`, `/resend`
-   - **Interactivity & Shortcuts**
-   - **Event Subscriptions** (if used)
-3. OAuth scopes (minimum starting point):
-   - `commands`
-   - `chat:write`
-   - `im:read`
-   - `im:write`
-   - `users:read`
-4. Install the app to workspace.
-5. Copy:
-   - Bot token (`xoxb-...`) -> `SLACK_BOT_TOKEN`
-   - Signing secret -> `SLACK_SIGNING_SECRET`
+1. Open Google Sheets.
+2. Create a blank spreadsheet.
+3. Name it something like: **Slack LMS SoR**.
+4. Create these tabs at the bottom (click `+`):
 
----
-
-## 5) Deploy Google Apps Script Web App
-
-> This repository is Node-style modular code. In Apps Script deployment, bundle/transpile or map module logic into Apps Script files.
-
-1. Open Apps Script (standalone or bound to the SoR sheet).
-2. Add project files corresponding to `src/` modules (or your bundled output).
-3. Expose a `doPost(e)` entrypoint that delegates to your webhook handler logic.
-4. Deploy as **Web app**:
-   - Execute as: Me
-   - Who has access: Anyone (for Slack webhook ingress)
-5. Copy deployed Web App URL.
-
-Use this URL in Slack for:
-
-- Slash command Request URLs
-- Interactivity Request URL
-- Event subscription Request URL (if enabled)
+- `Settings`
+- `Users`
+- `Tracks`
+- `Lessons`
+- `Enrollments`
+- `Progress`
+- `Deliveries`
+- `Reminders`
+- `Queue`
+- `Audit_Log`
+- `Error_Log`
+- `Gem_Roles`
+- `Prompt_Configs`
+- `Content_Pipeline`
+- `Generated_Drafts`
+- `QA_Results`
+- `Publish_Queue`
 
 ---
 
-## 6) Seed Core Data
+## Step 3) Create your Apps Script project
 
-Before first learner traffic:
+1. Go to <https://script.google.com>.
+2. Click **New project**.
+3. Rename it to something like **Slack LMS Bot**.
+4. In the file list, delete the default sample code.
 
-1. Add at least one active `Track`.
-2. Add ordered `Lessons` for the track.
-3. Add `Gem_Roles` and `Prompt_Configs` rows for AI pipeline roles.
-4. Add at least one admin user in `Users`.
+Now copy files from your downloaded repo:
 
----
+1. Open the local `appscript/` folder.
+2. For each `.gs` file in that folder, create a matching file in Apps Script and paste the contents.
+3. Also ensure `Code.gs` exists in Apps Script (this file is the web entrypoint).
 
-## 7) Configure Schedulers/Triggers
-
-In Apps Script, create time-driven triggers for queue and scans:
-
-- Queue worker: every 5 minutes
-- Delivery scan: hourly
-- Reminder scan: hourly
-- Reporting/maintenance: daily (optional)
-
-Each trigger should call your corresponding scheduler/worker entry functions that enqueue/process `Queue` jobs.
+> Tip: You can paste one file at a time; no coding changes needed.
 
 ---
 
-## 8) Local Validation Before/After Deploy
+## Step 4) Create Slack app from `manifest.json`
 
-Run the smoke suites locally:
+1. Go to <https://api.slack.com/apps>
+2. Click **Create New App**.
+3. Choose **From an app manifest**.
+4. Open this repo’s `manifest.json` file.
+5. Copy everything and paste into Slack’s manifest editor.
+6. Click create.
 
-```bash
-npm test
-```
+Then install the app:
 
-This executes:
-
-- foundation checks
-- data-layer checks
-- learner lifecycle checks
-- queue/scheduler checks
-- AI pipeline checks
-
----
-
-## 9) Deployment Verification Checklist
-
-After deploy, verify in order:
-
-1. Slack signature verification succeeds (no auth rejects for valid requests).
-2. `/onboard` creates/updates `Users` + `Enrollments`.
-3. Delivery scan enqueues jobs in `Queue`.
-4. Queue worker claims and processes jobs (`pending` -> `in_progress` -> `done/retry`).
-5. `/complete` updates `Progress` and self-paced users receive next lesson.
-6. Reminder scan identifies overdue deliveries and sends one reminder per idempotency key.
-7. AI pipeline can:
-   - start pipeline row
-   - generate draft
-   - record QA results
-   - publish approved content into `Lesson_Content`
+1. Go to **OAuth & Permissions**.
+2. Click **Install to Workspace**.
+3. Copy the **Bot User OAuth Token** (`xoxb-...`).
+4. Go to **Basic Information**.
+5. Copy the **Signing Secret**.
 
 ---
 
-## 10) Common Failure Modes
+## Step 5) Add settings in your `Settings` sheet tab
 
-- **401 unauthorized from webhook**
-  - Check `SLACK_SIGNING_SECRET`, timestamp skew, and raw-body handling.
-- **No Slack messages sent**
-  - Check `SLACK_BOT_TOKEN` and scopes.
-- **Queue jobs stuck in retry**
-  - Check handler mapping and error payloads in `Queue`/`Error_Log`.
-- **Duplicate deliveries/reminders**
-  - Verify idempotency keys are present and stable.
-- **AI role invocation failures**
-  - Ensure active `Gem_Roles` + matching active `Prompt_Configs` exist.
+Add rows for these keys:
 
----
+- `SLACK_SIGNING_SECRET` = (paste Slack signing secret)
+- `SLACK_BOT_TOKEN` = (paste bot token)
+- `WEBHOOK_MAX_SKEW_SECONDS` = `300`
+- `APP_ENV` = `prod`
 
-## 11) Production Hardening Notes
+Optional but recommended:
 
-- Restrict spreadsheet sharing to LMS ops/admin group.
-- Protect secret cells/ranges.
-- Archive old `Audit_Log`/`Error_Log`/`Queue` rows periodically.
-- Add alerting for:
-  - queue depth growth
-  - repeated retries
-  - publish failures
-- Use staged rollout: one pilot cohort + one track first.
+- `QUEUE_MAX_ATTEMPTS` = `3`
+- `QUEUE_BACKOFF_SECONDS` = `60`
+- `QUEUE_STALE_LOCK_SECONDS` = `300`
 
 ---
 
-## 12) Quick Start (Minimal End-to-End)
+## Step 6) Deploy Apps Script as a web app
 
-1. Create Sheet + tabs and fill `Settings`.
-2. Create Slack app and wire request URLs to Apps Script web app.
-3. Seed one track with 2 lessons.
-4. Seed one active learner and one admin.
-5. Run `/onboard` for learner.
-6. Run delivery scan + queue worker.
-7. Complete lesson and verify next lesson flow.
-8. Trigger AI pipeline for a draft and publish flow.
+1. In Apps Script click **Deploy** → **New deployment**.
+2. Type: **Web app**.
+3. **Execute as**: Me
+4. **Who has access**: Anyone
+5. Click **Deploy**.
+6. Copy the web app URL.
 
-If all eight pass, your baseline deployment is functional.
+Keep this URL safe. You need it for Slack.
+
+---
+
+## Step 7) Connect Slack to your web app URL
+
+In Slack app settings, paste the same Apps Script URL into:
+
+- Slash command request URLs
+- Interactivity request URL
+- Event subscription request URL (if you use events)
+
+If your manifest still contains `https://YOUR_APPS_SCRIPT_WEB_APP_URL`, replace it with your real URL and re-apply.
+
+---
+
+## Step 8) Add starter learning data
+
+In your Google Sheet, add at least:
+
+- 1 track
+- 2 lessons in that track
+- 1 learner user
+- 1 admin user
+
+Without this, commands may run but show nothing useful.
+
+---
+
+## Step 9) Add automatic triggers in Apps Script
+
+In Apps Script:
+
+1. Click **Triggers** (clock icon)
+2. Add these time-based triggers:
+   - Queue worker: every 5 minutes
+   - Delivery scan: every hour
+   - Reminder scan: every hour
+
+This is what makes the bot run automatically.
+
+---
+
+## Step 10) Test in Slack
+
+Run these commands in Slack:
+
+1. `/onboard`
+2. `/learn`
+3. `/complete`
+4. `/progress`
+
+You should see onboarding, lesson delivery, completion updates, and progress responses.
+
+---
+
+## Common problems (simple fixes)
+
+- **Slack says request failed**
+  - Check the web app URL is correct and deployed.
+- **Signature/auth error**
+  - Check `SLACK_SIGNING_SECRET` exactly matches Slack.
+- **Bot does not reply**
+  - Check `SLACK_BOT_TOKEN` and app install status.
+- **No lesson appears**
+  - Add track + lessons + enrollment rows.
+- **Jobs stuck**
+  - Check `Queue` tab and trigger setup.
+
+---
+
+## Quick go-live checklist
+
+- [ ] Web app deployed
+- [ ] Slack token + signing secret saved in `Settings`
+- [ ] Slack request URLs use your Apps Script URL
+- [ ] Track and lessons are seeded
+- [ ] Triggers are enabled
+- [ ] `/learn` and `/progress` work
+
+If all boxes are checked, your Slack LMS bot is live. 🎉

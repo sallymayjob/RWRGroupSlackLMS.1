@@ -2,7 +2,7 @@
  * LMS-011: Sheets tab schema bootstrap definitions.
  */
 
-const TAB_SCHEMAS = {
+var TAB_SCHEMAS = {
   Users: ['user_id', 'slack_user_id', 'email', 'full_name', 'role', 'manager_user_id', 'status', 'timezone', 'created_at', 'updated_at'],
   Cohorts: ['cohort_id', 'name', 'track_id', 'start_date', 'cadence', 'owner_user_id', 'status', 'updated_at'],
   Tracks: ['track_id', 'title', 'description', 'default_cadence', 'prereq_track_id', 'active_flag', 'updated_at'],
