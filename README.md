@@ -10,6 +10,16 @@ This repository contains a modular, Apps Script-friendly implementation of a Sla
 
 ---
 
+
+## Slack manifest
+
+A starter Slack app manifest is included at `manifest.json`.
+
+- Replace `https://YOUR_APPS_SCRIPT_WEB_APP_URL` with your deployed Apps Script Web App URL before importing into Slack.
+- Import via Slack App settings (App Manifest) to create/update app configuration quickly.
+
+---
+
 ## 1) Prerequisites
 
 Before deployment, ensure you have:
