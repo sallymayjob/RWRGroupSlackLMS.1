@@ -96,6 +96,7 @@
         "commands",
         "chat:write",
         "chat:write.public",
+        "im:history",
         "im:read",
         "im:write",
         "users:read",
