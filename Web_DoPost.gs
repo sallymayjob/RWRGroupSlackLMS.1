@@ -54,14 +54,3 @@ function createDoPostHandler({
     };
   };
 }
-
-function doPost(e) {
-  var handler = createDoPostHandler();
-  var headers = (e && e.headers) ? e.headers : {};
-  var rawBody = (e && e.postData && e.postData.contents) ? e.postData.contents : '';
-  var result = handler({ headers: headers, rawBody: rawBody });
-
-  return ContentService
-    .createTextOutput(JSON.stringify(result.body || {}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
