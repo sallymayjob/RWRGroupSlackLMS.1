@@ -58,26 +58,32 @@ function createRouter(handlers = {}) {
   } = handlers;
 
   return {
-    route(normalizedRequest, context) {
+    route(normalizedRequest, context = {}) {
+      const routeContext = {
+        traceId: context.traceId || '',
+        actor: context.actor || null,
+        authz: context.authz || null,
+      };
+
       switch (normalizedRequest.routeType) {
         case 'slash_command':
           return onSlashCommand
-            ? onSlashCommand(normalizedRequest, context)
+            ? onSlashCommand(normalizedRequest, routeContext)
             : { ok: false, status: 404, body: { error: 'slash_command_not_supported' } };
         case 'block_actions':
         case 'view_submission':
         case 'shortcut':
         case 'interactive':
           return onInteractive
-            ? onInteractive(normalizedRequest, context)
+            ? onInteractive(normalizedRequest, routeContext)
             : { ok: false, status: 404, body: { error: 'interactive_not_supported' } };
         case 'url_verification':
           return onUrlVerification
-            ? onUrlVerification(normalizedRequest, context)
+            ? onUrlVerification(normalizedRequest, routeContext)
             : { ok: true, status: 200, body: { challenge: normalizedRequest.payload.challenge || '' } };
         default:
           return onUnknown
-            ? onUnknown(normalizedRequest, context)
+            ? onUnknown(normalizedRequest, routeContext)
             : { ok: false, status: 400, body: { error: 'unknown_route' } };
       }
     },
